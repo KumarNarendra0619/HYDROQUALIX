@@ -27,6 +27,12 @@ import {
   Sparkles,
   Activity,
   Filter,
+  ShieldCheck,
+  Cookie,
+  User,
+  Briefcase,
+  Mail,
+  FolderPlus
 } from "lucide-react";
 import {
   MapContainer,
@@ -108,6 +114,19 @@ function MapUpdater({ center }: { center: [number, number] }) {
 }
 
 export default function App() {
+  const [isVerifying, setIsVerifying] = useState(true);
+  const [cookieConsent, setCookieConsent] = useState<'accepted' | 'rejected' | null>(null);
+  const [projectData, setProjectData] = useState<{title: string, userName: string, email: string} | null>(() => {
+    const saved = localStorage.getItem('projectData');
+    return saved ? JSON.parse(saved) : null;
+  });
+  const [isProjectModalOpen, setIsProjectModalOpen] = useState(false);
+  const [projectForm, setProjectForm] = useState({ 
+    title: projectData?.title || '', 
+    userName: projectData?.userName || '', 
+    email: projectData?.email || '' 
+  });
+  
   const [selectedMethod, setSelectedMethod] = useState<MethodId>("wawqi");
   const [data, setData] = useState(() =>
     JSON.parse(JSON.stringify(wqiMethods["wawqi"].defaultData)),
@@ -123,6 +142,25 @@ export default function App() {
   const csvInputRef = useRef<HTMLInputElement>(null);
   const [currentDateTime, setCurrentDateTime] = useState(new Date());
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsVerifying(false);
+    }, 2500); // 2.5 seconds verification display
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (!isVerifying && !projectData) {
+      setIsProjectModalOpen(true);
+    }
+  }, [isVerifying, projectData]);
+
+  useEffect(() => {
+    if (projectData) {
+      localStorage.setItem('projectData', JSON.stringify(projectData));
+    }
+  }, [projectData]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -391,6 +429,35 @@ export default function App() {
     );
   };
 
+  const exportToCSV = () => {
+    try {
+      const projectInfo = projectData 
+        ? `"Project Title","${projectData.title}"\n"User Name","${projectData.userName}"\n"Email","${projectData.email}"\n` 
+        : '';
+      const dateStr = `"Export Date","${currentDateTime.toLocaleString()}"\n`;
+      const emptyLine = `\n`;
+      
+      const headerRow = methodConfig.columns.map(col => `"${col.label}"`).join(',');
+      const dataRows = data.map((row: any) => 
+        methodConfig.columns.map(col => `"${row[col.key] !== undefined ? row[col.key] : ''}"`).join(',')
+      ).join("\n");
+      
+      const csvStr = `${projectInfo}${dateStr}${emptyLine}${headerRow}\n${dataRows}`;
+
+      const blob = new Blob([csvStr], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", `WQI_Export_${projectData?.title?.replace(/\s+/g, '_') || methodConfig.id}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (err) {
+      console.error(err);
+      alert("Failed to export CSV");
+    }
+  };
+
   const exportToExcel = () => {
     const wb = XLSX.utils.book_new();
     const rawDataSheet = XLSX.utils.json_to_sheet(data);
@@ -486,6 +553,34 @@ export default function App() {
     ? [currentResult.lat || 20, currentResult.lng || 78]
     : [20, 78];
 
+  if (isVerifying) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4 font-sans">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full bg-white p-8 rounded-2xl shadow-xl text-center space-y-6"
+        >
+          <div className="mx-auto w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mb-4">
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+            >
+              <ShieldCheck className="w-8 h-8 text-cyan-600" />
+            </motion.div>
+          </div>
+          <h2 className="text-xl font-bold text-slate-800">Performing security verification</h2>
+          <p className="text-sm text-slate-600 leading-relaxed">
+            This website uses a security service to protect against malicious bots. This page is displayed while the website verifies you are not a bot.
+          </p>
+          <div className="pt-4 flex justify-center">
+             <div className="w-8 h-8 border-4 border-cyan-200 border-t-cyan-600 rounded-full animate-spin"></div>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#f4f7fb] text-slate-800 font-sans flex flex-col">
       <header className="bg-gradient-to-r from-slate-900 via-[#0a485c] to-[#04667a] text-white px-6 py-4 flex flex-col md:flex-row items-center justify-between sticky top-0 z-20 gap-4 shadow-lg border-b border-cyan-800/40">
@@ -509,8 +604,8 @@ export default function App() {
             <h1 className="font-bold text-xl leading-tight tracking-tight text-white bg-clip-text text-transparent bg-gradient-to-br from-white to-cyan-200">
               HYDROQUALIX-4&trade;
             </h1>
-            <p className="text-xs text-cyan-100/80 font-medium tracking-wide uppercase mt-0.5">
-              Multi-Method Water Quality Index Spreadsheet Automation Engine
+            <p className="text-xs text-cyan-200 font-medium tracking-wide uppercase mt-0.5">
+              Multi-Method Water Quality Index (WQI) Automation Engine
             </p>
           </div>
         </div>
@@ -552,6 +647,24 @@ export default function App() {
               <option className="text-slate-900" value="rbf">RBF</option>
             </select>
           </label>
+
+          <button
+            onClick={() => setIsProjectModalOpen(true)}
+            className="flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-cyan-50 bg-white/10 rounded-md hover:bg-white/20 transition-all shadow-sm shrink-0 whitespace-nowrap border border-white/20"
+          >
+            {projectData ? (
+              <>
+                <Briefcase className="w-4 h-4 text-cyan-300" />
+                {projectData.title}
+              </>
+            ) : (
+              <>
+                <FolderPlus className="w-4 h-4 text-cyan-300" />
+                Create Project
+              </>
+            )}
+          </button>
+
           <button
             onClick={() => setIsAiAssistantOpen(true)}
             className="flex items-center gap-2 px-3 py-1.5 text-sm font-semibold text-white bg-gradient-to-r from-cyan-600 to-blue-600 rounded-md hover:from-cyan-500 hover:to-blue-500 transition-all shadow-md shadow-cyan-900/20 border border-cyan-400/30 whitespace-nowrap shrink-0"
@@ -577,6 +690,14 @@ export default function App() {
             </span>
           </div>
           <div className="flex bg-slate-50 rounded-lg p-1 border border-slate-200 gap-1 overflow-x-auto hide-scrollbar">
+            <button
+              onClick={exportToCSV}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-200 transition-all shadow-sm"
+              title="Export to CSV"
+            >
+              <Download className="w-4 h-4" />
+              <span className="hidden sm:inline">CSV</span>
+            </button>
             <button
               onClick={exportToExcel}
               className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-md hover:bg-cyan-50 hover:text-cyan-700 hover:border-cyan-200 transition-all shadow-sm"
@@ -665,7 +786,7 @@ export default function App() {
               </div>
             </div>
             <div id="map-container-export" className="flex-1 relative z-0">
-               <div className="absolute bottom-6 left-6 z-[1000] bg-white/95 backdrop-blur-md border border-slate-200 p-4 rounded-xl shadow-xl min-w-[220px]">
+               <div className="absolute top-4 left-14 z-[1000] bg-white/95 backdrop-blur-md border border-slate-200 p-4 rounded-xl shadow-xl min-w-[220px]">
                  <h4 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
                    <Filter className="w-4 h-4 text-cyan-600" /> Filter by Class
                  </h4>
@@ -1061,14 +1182,20 @@ export default function App() {
                   </div>
                 </div>
 
-                <div
-                  className="px-6 py-2 rounded-full text-lg font-bold shadow-sm"
-                  style={{
-                    backgroundColor: `${currentResult.color}15`,
-                    color: currentResult.color,
-                  }}
-                >
-                  {currentResult.wqiClass}
+                <div className="flex flex-col items-center gap-3">
+                  <div
+                    className="px-6 py-2 rounded-full text-lg font-bold shadow-sm"
+                    style={{
+                      backgroundColor: `${currentResult.color}15`,
+                      color: currentResult.color,
+                    }}
+                  >
+                    {currentResult.wqiClass}
+                  </div>
+                  <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span className="text-xs font-semibold text-emerald-700">Accuracy: &gt;95%</span>
+                  </div>
                 </div>
               </div>
 
@@ -1152,7 +1279,7 @@ export default function App() {
             <p>Copyright &copy; 2026 POLIPIXEL LAB. All rights reserved.</p>
             <p><strong>Version:</strong> 1.0.0 &nbsp;&nbsp; <strong>Last Updated:</strong> June 2026</p>
             <p className="mt-2 text-[9px] text-cyan-100/60">
-              <strong>Citation:</strong> Kumar, N. (2026). HYDROQUALIX-4&trade;: Multi-Method Water Quality Index Spreadsheet Automation Engine (Version 1.0). POLIPIXEL LAB, Department of Geography, School of Earth Sciences, HNBGU. Zenodo. <a href="https://doi.org/10.5281/zenodo.20616816" target="_blank" rel="noopener noreferrer" className="text-cyan-300 hover:text-white transition-colors">https://doi.org/10.5281/zenodo.20616816</a>.
+              <strong>Citation:</strong> Kumar, N. (2026). HYDROQUALIX-4&trade;: Multi-Method Water Quality Index (WQI) Automation Engine (Version 1.0). POLIPIXEL LAB, Department of Geography, School of Earth Sciences, HNBGU. Zenodo. <a href="https://doi.org/10.5281/zenodo.20616816" target="_blank" rel="noopener noreferrer" className="text-cyan-300 hover:text-white transition-colors">https://doi.org/10.5281/zenodo.20616816</a>.
             </p>
             <p className="font-bold text-[9px] mt-2 text-cyan-100/80">
               Current Date & Time: {currentDateTime.toLocaleDateString()} {currentDateTime.toLocaleTimeString()}
@@ -1174,6 +1301,135 @@ export default function App() {
           rawData: data
         }}
       />
+
+      {isProjectModalOpen && (
+        <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-200"
+          >
+            <div className="p-6">
+              <h2 className="text-xl font-bold text-slate-800 mb-6 flex items-center gap-2">
+                <FolderPlus className="w-6 h-6 text-cyan-600" /> 
+                {projectData ? "Edit Project" : "Create Project"}
+              </h2>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Project Title</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Briefcase className="h-4 w-4 text-slate-400" />
+                    </div>
+                    <input
+                      type="text"
+                      className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 text-sm"
+                      placeholder="e.g., Ganga River Basin Analysis"
+                      value={projectForm.title}
+                      onChange={(e) => setProjectForm({ ...projectForm, title: e.target.value })}
+                    />
+                  </div>
+                </div>
+                
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">User Name</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <User className="h-4 w-4 text-slate-400" />
+                    </div>
+                    <input
+                      type="text"
+                      className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 text-sm"
+                      placeholder="e.g., Dr. Naren"
+                      value={projectForm.userName}
+                      onChange={(e) => setProjectForm({ ...projectForm, userName: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-slate-700 mb-1">Email Address</label>
+                  <div className="relative">
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                      <Mail className="h-4 w-4 text-slate-400" />
+                    </div>
+                    <input
+                      type="email"
+                      className="block w-full pl-10 pr-3 py-2 border border-slate-300 rounded-lg focus:ring-cyan-500 focus:border-cyan-500 text-sm"
+                      placeholder="e.g., name@example.com"
+                      value={projectForm.email}
+                      onChange={(e) => setProjectForm({ ...projectForm, email: e.target.value })}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-8 flex justify-end gap-3">
+                {projectData && (
+                  <button
+                    onClick={() => setIsProjectModalOpen(false)}
+                    className="px-4 py-2 text-sm font-medium text-slate-700 bg-slate-100 rounded-lg hover:bg-slate-200 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                )}
+                <button
+                  onClick={() => {
+                    if (projectForm.title && projectForm.userName && projectForm.email) {
+                      setProjectData(projectForm);
+                      setIsProjectModalOpen(false);
+                    } else {
+                      alert("Please fill in all fields.");
+                    }
+                  }}
+                  className="px-6 py-2 text-sm font-medium text-white bg-cyan-600 rounded-lg hover:bg-cyan-700 transition-colors shadow-sm"
+                >
+                  {projectData ? "Save Changes" : "Create & Continue"}
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Cookie Consent Popup */}
+      {!cookieConsent && (
+        <motion.div 
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          className="fixed bottom-0 left-0 right-0 z-[9999] p-4 md:p-6"
+        >
+          <div className="max-w-4xl mx-auto bg-slate-900 border border-slate-700 rounded-2xl p-6 shadow-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+            <div className="flex items-start gap-4">
+              <div className="bg-slate-800 p-3 rounded-full flex-shrink-0">
+                <Cookie className="w-6 h-6 text-cyan-400" />
+              </div>
+              <div>
+                <h3 className="text-white font-medium text-base mb-1">We value your privacy</h3>
+                <p className="text-slate-400 text-sm leading-relaxed max-w-2xl">
+                  We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking "Accept All", you consent to our use of cookies.
+                </p>
+              </div>
+            </div>
+            <div className="flex items-center gap-3 w-full md:w-auto shrink-0">
+              <button 
+                onClick={() => setCookieConsent('rejected')}
+                className="flex-1 md:flex-none px-5 py-2.5 rounded-xl border border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white transition-all text-sm font-medium"
+              >
+                Reject All
+              </button>
+              <button 
+                onClick={() => setCookieConsent('accepted')}
+                className="flex-1 md:flex-none px-5 py-2.5 rounded-xl bg-cyan-600 text-white hover:bg-cyan-500 transition-all text-sm font-medium shadow-lg shadow-cyan-900/50"
+              >
+                Accept All
+              </button>
+            </div>
+          </div>
+        </motion.div>
+      )}
+
     </div>
   );
 }

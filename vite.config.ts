@@ -51,7 +51,7 @@ export default defineConfig(() => {
     },
     build: {
       target: 'esnext',
-      minify: 'esbuild',
+      minify: true,
       cssMinify: true
     }
   };
