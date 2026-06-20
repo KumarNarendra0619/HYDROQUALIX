@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { useMap } from 'react-leaflet';
+import L from 'leaflet';
+(window as any).L = L;
 import { SimpleMapScreenshoter } from 'leaflet-simple-map-screenshoter';
 
 export default function ScreenshoterControl() {

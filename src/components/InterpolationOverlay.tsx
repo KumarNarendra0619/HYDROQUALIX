@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useMap, ImageOverlay } from 'react-leaflet';
 import L from 'leaflet';
+(window as any).L = L;
 import { MethodId } from '../utils/wqi';
 
 export interface SpatialPoint {

@@ -39,6 +39,7 @@ import {
   GeoJSON,
 } from "react-leaflet";
 import L from "leaflet";
+(window as any).L = L;
 import "leaflet/dist/leaflet.css";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
