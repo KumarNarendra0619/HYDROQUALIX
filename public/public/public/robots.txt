@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://kumarnarendra0619.github.io/HYDROQUALIX/sitemap.xml
