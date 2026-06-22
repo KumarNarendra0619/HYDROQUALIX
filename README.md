@@ -1,13 +1,19 @@
-![HydroQualix Logo](assets/logo.png)
 <p align="center">
-  <img src="assets/logo.png" width="160" alt="HydroQualix Logo">
+  <img src="assets/logo.png" width="140">
 </p>
 
-<h1 align="center"> HYDROQUALIX-4™</h1>
+<p align="center">
+  <img src="https://img.shields.io/badge/GIS-WQI-blue">
+  <img src="https://img.shields.io/badge/Status-Research-green">
+</p>
+
+<h1 align="center">HYDROQUALIX-4™</h1>
 
 <p align="center">
-Multi-Method Water Quality Index (WQI) Automation Engine
+Multi-Method Water Quality Index Automation Engine
 </p>
+
+
 
 ![Status](https://img.shields.io/badge/Status-Active%20Research-green)
 ![Domain](https://img.shields.io/badge/Domain-GIS%20WQI-blue)
