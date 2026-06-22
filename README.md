@@ -1,6 +1,14 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="[https://kumarnarendra0619.github.io/HYDROQUALIX/googlebb811b19b7d83147.html)" />
-</div>
+<p align="center">
+  <img src="assets/logo.png" width="140">
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/GIS-WQI-blue">
+  <img src="https://img.shields.io/badge/Status-Research-green">
+  <img src="https://img.shields.io/badge/Domain-Hydrology-orange">
+</p>
+
+<h1 align="center">HYDROQUALIX</h1>
 
 # 💧 HYDROQUALIX-4™
 ![Status](https://img.shields.io/badge/Status-Active%20Research-green)
