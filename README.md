@@ -2,14 +2,12 @@
   <img src="assets/logo.png" width="160" alt="HydroQualix Logo">
 </p>
 
-<h1 align="center">💧 HYDROQUALIX-4™</h1>
+<h1 align="center"> HYDROQUALIX-4™</h1>
 
 <p align="center">
-GIS-based Water Quality Index (WQI) Analysis System
+Multi-Method Water Quality Index (WQI) Automation Engine
 </p>
 
-
-# 💧 HYDROQUALIX-4™
 ![Status](https://img.shields.io/badge/Status-Active%20Research-green)
 ![Domain](https://img.shields.io/badge/Domain-GIS%20WQI-blue)
 ![Type](https://img.shields.io/badge/Type-Environmental%20Analytics-orange)
