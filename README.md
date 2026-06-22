@@ -2,11 +2,6 @@
   <img src="assets/logo.png" width="140">
 </p>
 
-<p align="center">
-  <img src="https://img.shields.io/badge/GIS-WQI-blue">
-  <img src="https://img.shields.io/badge/Status-Research-green">
-</p>
-
 <h1 align="center">HYDROQUALIX-4™</h1>
 
 <p align="center">
@@ -40,5 +35,5 @@ HydroQualix is a **browser-based application**, so no heavy setup is required.
 ### ▶️ Local Setup
 
 ```bash
-git clone https://github.com/KumarNarendra0619/HYDROQUALIX.git
+git clone https://github.com/KumarNarendra0619/HYDROQUALIX
 cd HYDROQUALIX
