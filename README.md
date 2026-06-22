@@ -3,12 +3,11 @@
 </div>
 
 # 💧 HYDROQUALIX-4™
-
-![GitHub Repo](https://img.shields.io/badge/Project-HydroQualix-blue)
 ![Status](https://img.shields.io/badge/Status-Active%20Research-green)
-![Domain](https://img.shields.io/badge/Domain-GIS%20%7C%20WQI%20Analysis-orange)
+![Domain](https://img.shields.io/badge/Domain-GIS%20WQI-blue)
+![Type](https://img.shields.io/badge/Type-Environmental%20Analytics-orange)
 ![License](https://img.shields.io/badge/License-Academic-lightgrey)
-
+![Focus](https://img.shields.io/badge/Focus-Water%20Quality%20Index-critical)
 ---
 
 ## 🌍 Overview
