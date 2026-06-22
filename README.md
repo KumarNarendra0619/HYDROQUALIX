@@ -1,3 +1,4 @@
+![HydroQualix Logo](assets/logo.png)
 <p align="center">
   <img src="assets/logo.png" width="160" alt="HydroQualix Logo">
 </p>
