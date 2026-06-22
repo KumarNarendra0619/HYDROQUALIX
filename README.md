@@ -2,19 +2,50 @@
 <img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
 </div>
 
-# Run and deploy your AI Studio app
+# 💧 HYDROQUALIX
 
-This contains everything you need to run your app locally.
+![GitHub Repo](https://img.shields.io/badge/Project-HydroQualix-blue)
+![Status](https://img.shields.io/badge/Status-Active%20Research-green)
+![Domain](https://img.shields.io/badge/Domain-GIS%20%7C%20WQI%20Analysis-orange)
+![License](https://img.shields.io/badge/License-Academic-lightgrey)
 
-View your app in AI Studio: https://ai.studio/apps/29e4aa42-3bf1-4250-a5d9-ee4dec73f54d
+---
 
-## Run Locally
+## 🌍 Overview
 
-**Prerequisites:**  Node.js
+**HydroQualix** is a web-based geospatial Water Quality Index (WQI) analysis system designed for environmental monitoring, hydrological research, and data-driven decision-making.
+
+It integrates GIS concepts with scientific WQI modeling to visualize and evaluate water quality across spatial locations.
+
+👉 Live Demo:  
+https://kumarnarendra0619.github.io/HYDROQUALIX/
+
+---
+
+## ⚙️ Installation / Usage
+
+HydroQualix is a **browser-based application**, so no heavy setup is required.
+
+### ▶️ Local Setup
+
+```bash
+git clone https://github.com/KumarNarendra0619/HYDROQUALIX.git
+cd HYDROQUALIX
 
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+---
+
+### Straight truth (important)
+This version now upgrades your repo from:
+👉 “simple project page”  
+to  
+👉 “research-grade GIS environmental system”
+
+But still, one gap remains (serious one):
+- No **formula derivation section (mathematical rigor missing)**
+- No **dataset source citation (scientific credibility issue)**
+
+If you want next level upgrade, I can convert this into:
+👉 IEEE paper-style documentation + equations + architecture diagram + journal submission format
+
+Just say.
