@@ -1,14 +1,13 @@
 <p align="center">
-  <img src="assets/logo.png" width="140">
+  <img src="assets/logo.png" width="160" alt="HydroQualix Logo">
 </p>
+
+<h1 align="center">💧 HYDROQUALIX-4™</h1>
 
 <p align="center">
-  <img src="https://img.shields.io/badge/GIS-WQI-blue">
-  <img src="https://img.shields.io/badge/Status-Research-green">
-  <img src="https://img.shields.io/badge/Domain-Hydrology-orange">
+GIS-based Water Quality Index (WQI) Analysis System
 </p>
 
-<h1 align="center">HYDROQUALIX</h1>
 
 # 💧 HYDROQUALIX-4™
 ![Status](https://img.shields.io/badge/Status-Active%20Research-green)
